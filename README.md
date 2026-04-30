@@ -1,4 +1,5 @@
-# Lorem Ipsum
-## Dolor
-* Sit amet
-* Consectetur
+# Requirements
+Selenium library is required.
+```
+pip install selenium
+```

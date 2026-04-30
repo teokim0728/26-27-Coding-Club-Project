@@ -49,3 +49,43 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##############***********#**++***#*****######################******####%%%%%%%%%%%%%#==++**
 %%%%%%%%%%%%%%%%#%%%%%%%%%#################*******++++++++**************######################*****####%%%%%%%%%%#+====+*
 '''
+
+from selenium import webdriver
+from selenium .webdriver.common.by import By
+
+driver = webdriver.Chrome()
+url = 'https://seoulacademy.getalma.com/'
+driver.get(url)
+
+input('login, navigate to the specificcourse page, press enter in terminal.')
+
+class CurrentGrade:
+    def __init__(self, driver):
+        self.element = driver.find_element(By.CSS_SELECTOR, 'div.current-grade div.grade small.percent')
+        self.text = self.element.text.replace('(', '').replace('%', '').replace(')', '')
+        self.num = float(self.text)
+
+class Weight:
+    def __init__(self, driver):
+        self.elements = driver.find_elements(By.CSS_SELECTOR, 'div.category-total span.weight')
+        self.current = 0
+        for i in self.elements:
+            dummy = i.text.split('%')[0].strip()
+            if dummy.replace('.', '', 1).isdigit():
+                self.current += float(dummy)
+        self.future = 100 - self.current
+
+current_grade = CurrentGrade(driver)
+weight = Weight(driver)
+
+target = 89.5
+
+if weight.future > 0:
+    required = (target - (current_grade.num * (weight.current / 100))) / (weight.future / 100)
+    print('Current grade: ' + str(current_grade.num) + '%')
+    print('Weight taken up until now: ' + str(weight.current) + '%')
+    print('Weight left to be completed in the future: ' + str(weight.future) + '%')
+    print('Required grade: ' + str(required) + '%')
+    print('You should get at least ' + str(required) + '% in the future assessments to get an A.')
+else:
+    print('All weights are taken up. Your score is: ' + str(current_grade.num) + '%')
